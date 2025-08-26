@@ -1,8 +1,8 @@
 #welcome-info {
     overflow: hidden;
-    border-radius: 14px;
-    --kouseki-welcome-color: #49B1F5;
-    --kouseki-ip-color: #49B1F5;
+    border-radius: 14px!important;
+    --kouseki-welcome-color: #49B1F5!important;
+    --kouseki-ip-color: #49B1F5!important;
     --kouseki-gl-size: 16px!important;
   }
 /* 给 IP 地址的 span 再包一层，便于选择器定位 */
@@ -21,5 +21,6 @@
 #welcome-info b span.ip-mask:active {
     filter: blur(0);
 }
+
 
 /* 如果想做成「必须点一下才永久清晰」，把 :hover 去掉即可 */
