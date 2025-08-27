@@ -1,3 +1,5 @@
+$.getJSON("https://api64.ipify.org?format=json", function(data) {
+    let userIp = data.ip; // IPv4 或 IPv6
 //get请求
 $.ajax({
     type: 'get',
@@ -654,9 +656,6 @@ function showWelcome() {
     else timeChange = "夜深了，早点休息，少熬夜";
 
 // 新增ipv6显示为指定内容
-    if (ip.includes(":")) {
-        ip = "<br>好复杂，咱看不懂~(ipv6)";
-    }
     try {
         //自定义文本和需要放的位置
         document.getElementById("welcome-info").innerHTML =
