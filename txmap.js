@@ -659,7 +659,7 @@ function showWelcome() {
     }
     try {
         //自定义文本和需要放的位置
-        document.getElementById("welcome-info").innerHTML =
+        document.getElementById("welcome-ip-location-info").innerHTML =
             `欢迎来自 <b><span style="color: var(--kouseki-ip-color);font-size: var(--kouseki-gl-size)">${pos}</span></b> 的小友💖<br>${posdesc}🍂<br>当前位置距博主约 <b><span style="color: var(--kouseki-ip-color)">${dist}</span></b> 公里！<br>您的IP地址为：<b><span class="ip-mask">${ip}</span></b><br>${timeChange} <br>`;
     } catch (err) {
          console.log("Pjax无法获取元素")
@@ -667,4 +667,5 @@ function showWelcome() {
 }
 window.onload = showWelcome;
 // 如果使用了pjax在加上下面这行代码
+
 document.addEventListener('pjax:complete', showWelcome);
