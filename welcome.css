@@ -1,4 +1,4 @@
-#welcome-info {
+#welcome-ip-location-info {
     overflow: hidden;
     border-radius: 14px!important;
     --kouseki-welcome-color: #49B1F5!important;
@@ -8,7 +8,7 @@
 /* 给 IP 地址的 span 再包一层，便于选择器定位 */
 /* JS 原文已经生成 <b><span>IP</span></b>，这里我们给这个 span 加类名 ip-mask */
 /* 如果你不方便改 HTML，可直接用属性选择器：#welcome-info b span:nth-child(1) */
-#welcome-info b span.ip-mask {
+#welcome-ip-location-info b span.ip-mask {
     display: inline-block;
     filter: blur(6px);
     transition: filter .3s ease;
@@ -17,10 +17,11 @@
 }
 
 /* 鼠标悬停或点击时（:active）立即清晰 */
-#welcome-info b span.ip-mask:hover,
-#welcome-info b span.ip-mask:active {
+#welcome-ip-location-info b span.ip-mask:hover,
+#welcome-ip-location-info b span.ip-mask:active {
     filter: blur(0);
 }
 
 
 /* 如果想做成「必须点一下才永久清晰」，把 :hover 去掉即可 */
+
