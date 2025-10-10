@@ -1,3 +1,4 @@
+//get请求
 $.ajax({
     type: 'get',
     url: 'https://apis.map.qq.com/ws/location/v1/ip',
@@ -8,16 +9,9 @@ $.ajax({
     },
     dataType: 'jsonp',
     success: function (res) {
-        window.ipLocation = res; // Store the result in ipLocation
-
-        // Call showWelcome after the AJAX request is successful
-        showWelcome();
-    },
-    error: function (err) {
-        console.error('Error fetching IP location:', err);
+        window.ipLocation = res;
     }
-});
-
+})
 function getDistance(e1, n1, e2, n2) {
     const R = 6371
     const { sin, cos, asin, PI, hypot } = Math
@@ -35,16 +29,11 @@ function getDistance(e1, n1, e2, n2) {
 }
 
 function showWelcome() {
-    // Check if ipLocation is defined before proceeding
-    if (window.ipLocation && window.ipLocation.result && window.ipLocation.result.location) {
-        let dist = getDistance(112.92358, 35.79807, ipLocation.result.location.lng, ipLocation.result.location.lat);
-        let pos = ipLocation.result.ad_info.nation;
-        console.log(`Distance: ${dist} km`);
-        console.log(`Location: ${pos}`);
-    } else {
-        console.error("IP location is not available.");
-    }
-}
+
+    let dist = getDistance(112.92358, 35.79807, ipLocation.result.location.lng, ipLocation.result.location.lat); //这里记得换成自己的经纬度
+    let pos = ipLocation.result.ad_info.nation;
+    let ip;
+    let posdesc;
     //根据国家、省份、城市信息自定义欢迎语
     switch (ipLocation.result.ad_info.nation) {
         case "日本":
@@ -678,6 +667,4 @@ function showWelcome() {
 }
 window.onload = showWelcome;
 // 如果使用了pjax在加上下面这行代码
-
 document.addEventListener('pjax:complete', showWelcome);
-
