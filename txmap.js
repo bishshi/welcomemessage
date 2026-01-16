@@ -1,38 +1,55 @@
-//get请求
-$.ajax({
-    type: 'get',
-    url: 'https://apis.map.qq.com/ws/location/v1/ip',
-    data: {
-        key: 'JOCBZ-5FCRV-CWTP7-5HXTF-OODC2-2PF6R',
-        output: 'jsonp',
-        callback: '?',
-    },
-    dataType: 'jsonp',
-    success: function (res) {
-        window.ipLocation = res;
-    }
-})
-function getDistance(e1, n1, e2, n2) {
-    const R = 6371
-    const { sin, cos, asin, PI, hypot } = Math
-    let getPoint = (e, n) => {
-        e *= PI / 180
-        n *= PI / 180
-        return { x: cos(n) * cos(e), y: cos(n) * sin(e), z: sin(n) }
-    }
+// 1. 定义获取数据的函数
+function getIpLocation() {
+    $.ajax({
+        type: 'get',
+        url: 'https://apis.map.qq.com/ws/location/v1/ip',
+        data: {
+            key: 'JOCBZ-5FCRV-CWTP7-5HXTF-OODC2-2PF6R',
+            output: 'jsonp',
+            callback: '?',
+        },
+        dataType: 'jsonp',
+        success: function (res) {
+            // 2. 拿到数据后赋值给全局变量
+            window.ipLocation = res;
+            // 3. 关键：拿到数据后才调用 showWelcome
+            if (res && res.status === 0) {
+                showWelcome();
+            } else {
+                console.error("腾讯地图接口返回错误:", res.message);
+            }
+        },
+        error: function() {
+            console.error("网络请求失败");
+        }
+    });
+}
 
-    let a = getPoint(e1, n1)
-    let b = getPoint(e2, n2)
-    let c = hypot(a.x - b.x, a.y - b.y, a.z - b.z)
-    let r = asin(c / 2) * 2 * R
+function getDistance(e1, n1, e2, n2) {
+    // ... 你的 getDistance 逻辑保持不变 ...
+    const R = 6371;
+    const { sin, cos, asin, PI, hypot } = Math;
+    let getPoint = (e, n) => {
+        e *= PI / 180;
+        n *= PI / 180;
+        return { x: cos(n) * cos(e), y: cos(n) * sin(e), z: sin(n) };
+    };
+    let a = getPoint(e1, n1);
+    let b = getPoint(e2, n2);
+    let c = hypot(a.x - b.x, a.y - b.y, a.z - b.z);
+    let r = asin(c / 2) * 2 * R;
     return Math.round(r);
 }
 
 function showWelcome() {
+    // 增加一个防御性判断，防止数据异常
+    if (!window.ipLocation || !window.ipLocation.result) return;
 
-    let dist = getDistance(112.92358, 35.79807, ipLocation.result.location.lng, ipLocation.result.location.lat); //这里记得换成自己的经纬度
-    let pos = ipLocation.result.ad_info.nation;
-    let ip;
+    let res = window.ipLocation.result;
+    let dist = getDistance(112.92358, 35.79807, res.location.lng, res.location.lat); 
+    
+    let pos = res.ad_info.nation;
+    let ip = res.ip;
     let posdesc;
     //根据国家、省份、城市信息自定义欢迎语
     switch (ipLocation.result.ad_info.nation) {
@@ -654,17 +671,21 @@ function showWelcome() {
     else timeChange = "夜深了，早点休息，少熬夜";
 
 // 新增ipv6显示为指定内容
-    if (ip.includes(":")) {
-        ip = "<br>好复杂，咱看不懂~(ipv6)";
-    }
-    try {
-        //自定义文本和需要放的位置
+try {
         document.getElementById("welcome-ip-location-info").innerHTML =
             `欢迎来自 <b><span style="color: var(--kouseki-ip-color);font-size: var(--kouseki-gl-size)">${pos}</span></b> 的小友💖<br>${posdesc}🍂<br>当前位置距博主约 <b><span style="color: var(--kouseki-ip-color)">${dist}</span></b> 公里！<br>您的IP地址为：<b><span class="ip-mask">${ip}</span></b><br>${timeChange} <br>`;
     } catch (err) {
-         console.log("Pjax无法获取元素")
+         console.log("元素不存在");
     }
 }
-window.onload = showWelcome;
+window.onload = getIpLocation;
 // 如果使用了pjax在加上下面这行代码
-document.addEventListener('pjax:complete', showWelcome);
+document.addEventListener('pjax:complete', function() {
+    // 如果已经有数据了，直接显示；没有则重新请求
+    if (window.ipLocation) {
+        showWelcome();
+    } else {
+        getIpLocation();
+    }
+});
+
